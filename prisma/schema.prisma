@@ -1,0 +1,66 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  cards     Card[]
+  decks     Deck[]
+  reviews   CardReview[]
+}
+
+model Card {
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String
+  answer        String
+  tags          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  nextReviewAt  DateTime? // 다음 복습 예정일
+  intervalDays  Int       @default(1) // 복습 간격 (일 단위)
+  easeFactor    Float     @default(2.5) // 학습 난이도 (SM-2 방식 활용 가능)
+
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+
+  deck      Deck?     @relation(fields: [deckId], references: [id])
+  deckId    Int?
+
+  reviews   CardReview[]
+}
+
+
+model Deck {
+  id     Int     @id @default(autoincrement())
+  name   String
+  
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  cards     Card[]
+}
+
+model CardReview {
+  id        Int      @id @default(autoincrement())
+  reviewedAt DateTime @default(now())
+  success   Boolean   
+  note      String?   
+
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+
+  card      Card      @relation(fields: [cardId], references: [id])
+  cardId    Int
+}
