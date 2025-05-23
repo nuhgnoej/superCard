@@ -12,10 +12,18 @@
     "@prisma/client": "^6.8.2",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
+    "bcryptjs": "^3.0.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.12.2",
     "isbot": "^5.1.27",
+    "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.5.3"
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-router": "^7.5.3",
+    "recharts": "^2.15.3",
+    "swiper": "^11.2.8"
   },
   "devDependencies": {
     "@react-router/dev": "^7.5.3",
@@ -23,8 +31,10 @@
     "@types/node": "^20",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
     "prisma": "^6.8.2",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
     "vite-tsconfig-paths": "^5.1.4"

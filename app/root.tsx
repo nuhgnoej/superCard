@@ -9,6 +9,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { useNavigation } from "react-router";
+import { useLoaderData } from "react-router";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,8 +43,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+import type { loader as rootLoader } from "~/routes/root.server";
+import Top from "./components/Top";
+
+export { loader } from "~/routes/root.server";
+
 export default function App() {
-  return <Outlet />;
+  const navigation = useNavigation();
+  const data = useLoaderData<typeof rootLoader>();
+
+  return (
+      <div 
+        style={{
+          backgroundImage: "url(bgImg-1.jpg)", // 이미지 경로
+          backgroundSize: "cover", // 이미지가 배경을 완전히 덮도록
+          backgroundPosition: "center center", // 이미지를 중앙에 배치
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+      {navigation.state === "loading" && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+        </div>
+      )}
+      <Top isLoggedIn={data.isLoggedIn} user={data.user} />
+      <Outlet />
+    </div>
+    
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

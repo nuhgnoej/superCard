@@ -11,6 +11,7 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  password  String
   name      String?
   createdAt DateTime @default(now())
 
@@ -24,23 +25,29 @@ model Card {
   title         String
   content       String
   answer        String
-  tags          String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  image         String?       // 이미지 경로
+  type          String?       // 카드 유형 (예: '단어', '정의' 등)
+  tier          Int?          // 학습 수준 분류
+  box           Int?          @default(1) // Leitner box 번호
+  superCardId   Int?          // 상위 카드 ID (관계형 구조)
+  class         String?       // 카테고리 또는 분류
+  reviewCount   Int           @default(0) // 누적 복습 횟수
 
-  nextReviewAt  DateTime? // 다음 복습 예정일
-  intervalDays  Int       @default(1) // 복습 간격 (일 단위)
-  easeFactor    Float     @default(2.5) // 학습 난이도 (SM-2 방식 활용 가능)
+  intervalDays  Int           @default(1)
+  easeFactor    Float         @default(2.5)
+  lastReviewAt  DateTime
+  nextReviewAt  DateTime     
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int
+  user          User          @relation(fields: [userId], references: [id])
+  userId        Int
 
-  deck      Deck?     @relation(fields: [deckId], references: [id])
-  deckId    Int?
+  deck          Deck?         @relation(fields: [deckId], references: [id])
+  deckId        Int?
 
-  reviews   CardReview[]
+  reviews       CardReview[]
 }
-
 
 model Deck {
   id     Int     @id @default(autoincrement())
