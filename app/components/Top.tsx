@@ -159,7 +159,7 @@ export default function Top({ isLoggedIn, user }: TopProps) {
           )}
         >
           <Link
-            to="/settings"
+            to="/profile"
             className="hover:underline text-white font-semibold transition-all"
             title="user profile"
           >

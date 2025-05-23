@@ -18,6 +18,9 @@ model User {
   cards     Card[]
   decks     Deck[]
   reviews   CardReview[]
+
+  avatarUrl String?   // ✅ 프로필 이미지 (URL)
+  bio       String?   // ✅ 자기소개
 }
 
 model Card {
