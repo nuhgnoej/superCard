@@ -1,91 +1,68 @@
-<<<<<<< HEAD
-# superCard
-=======
-# Welcome to React Router!
+# 🎓 졸업 프로젝트 소개
 
-A modern, production-ready template for building full-stack React applications using React Router.
+> **한양사이버대학교 컴퓨터공학부 4학년 졸업작품**
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+안녕하세요! 👋  
+저는 **한양사이버대학교 컴퓨터공학부 4학년** 재학생으로, 졸업 프로젝트로 **학습 보조 웹 어플리케이션**을 개발하고 있습니다.
 
 ---
 
-Built with ❤️ using React Router.
->>>>>>> ce42ea8 (Initial commit from create-react-router)
+## 🎯 프로젝트 개요
+
+> 사용자가 카드를 생성하고,  
+> 일정한 주기에 따라 **자동 복습**을 유도하는  
+> 스마트 학습 관리 웹 서비스입니다.
+
+- 학습한 내용을 잊기 전에 복습하도록 돕는 **반복 학습 시스템**
+- 카드 기반으로 콘텐츠를 작성 및 관리
+- 학습 진도에 따라 **스마트 복습 주기** 자동 조정
+
+---
+
+## 🛠 사용 기술 스택
+
+### ✅ Frontend
+
+- **React**  
+- **React Router**  
+- **TailwindCSS**  
+- **Lucide Icons**
+
+### ✅ Backend
+
+- **Node.js**  
+- **Express.js**
+
+### ✅ Database
+
+- **SQLite**  
+- **Prisma ORM**
+
+---
+
+## 🧩 주요 기능 요약
+
+| 기능                          | 설명 |
+|-----------------------------|------|
+| ✅ 카드 생성 및 관리            | 텍스트 기반 학습 카드 작성 및 수정 |
+| 🔁 반복 복습 로직              | 복습 주기에 따라 자동 재등장 |
+| 🗂 카드 필터 및 분류           | 태그 및 타입에 따른 분류/검색 |
+| 📅 복습 일정 자동 계산         | 복습 결과에 따라 주기 자동 조절 |
+| 📈 학습 통계 및 진행 상황 시각화 | (추가 예정) 사용자별 학습 진척도 표시 |
+
+---
+
+## 🚀 진행 현황
+
+- [x] 카드 생성/수정/삭제
+- [x] 반복 복습 알고리즘 구현
+- [x] 필터링 및 검색 기능
+- [ ] 학습 통계 시각화 기능
+- [ ] 사용자 인증 및 개인화
+
+---
+
+## 📌 목표
+
+> 누구나 쉽게 **자기 주도적 학습을 설계**하고  
+> 지속적으로 **복습 루틴을 유지**할 수 있도록 돕는 서비스 구축
