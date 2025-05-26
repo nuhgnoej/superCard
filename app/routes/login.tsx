@@ -5,6 +5,15 @@ import bcrypt from "bcryptjs";
 import { sessionStorage } from "~/utils/session.server";
 import prisma from "~/utils/db.server";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Login | SuperCard" },
+    {
+      name: "description",
+      content: "로그인하세요.",
+    },
+  ];
+}
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email") as string;

@@ -6,6 +6,17 @@ import { useActionData } from "react-router";
 import prisma from "~/utils/db.server";
 import { sendResetEmail } from "~/utils/email.server";
 import { generateToken, hashToken } from "~/utils/token.server";
+import type { Route } from "../+types/root";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Forgot Password | SuperCard" },
+    {
+      name: "description",
+      content: "비밀번호를 초기화하세요.",
+    },
+  ];
+}
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();

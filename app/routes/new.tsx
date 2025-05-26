@@ -10,6 +10,7 @@ import type { Route } from "../+types/root";
 import { makeCard, saveImage, setCard } from "~/utils/card-repo";
 import { getSession } from "~/utils/session.server";
 import prisma from "~/utils/db.server";
+import { Info } from "lucide-react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -75,7 +76,8 @@ export const action = async ({ request }: Route.ActionArgs) => {
     superCardId,
     image: imageUrl ?? undefined,
     userId: Number(user),
-    type,    
+    type,
+    box: 1,
   });
 
   await setCard(card);
@@ -174,11 +176,11 @@ export default function New() {
             className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md text-gray-400"
           >
             <option value="">-- Select Card Type--</option>
-              <option value="Task">Task</option>
-              <option value="Quiz">Quiz</option>
-              <option value="Memo">Memo</option>
-              <option value="Tip">Tip</option>
-              <option value="Unknown">Unknown</option>
+            <option value="Task">Task</option>
+            <option value="Quiz">Quiz</option>
+            <option value="Memo">Memo</option>
+            <option value="Tip">Tip</option>
+            <option value="Unknown">Unknown</option>
           </select>
         </div>
         <input type="hidden" name="user" value={id} />
@@ -212,9 +214,11 @@ export default function New() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-white">
-              Depth
-            </label>
+            <label className="block text-sm font-medium text-white">Tier</label>
+            <p className="mt-1 text-xs text-gray-400">
+              이 카드를 어느 카드(SuperCard)의 하위 카드로 지정하려면 Tier를 1
+              올려야 합니다.
+            </p>
             <input
               type="number"
               name="tier"

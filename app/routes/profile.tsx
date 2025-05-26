@@ -1,9 +1,26 @@
 // src/pages/EditProfile.tsx
 import { useState, useRef } from "react";
-import { Form, redirect, useLoaderData, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router";
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from "react-router";
 import prisma from "~/utils/db.server";
 import { saveProfileImage } from "~/utils/profile-repo";
 import { getSession } from "~/utils/session.server";
+import type { Route } from "../+types/root";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Profile | SuperCard" },
+    {
+      name: "description",
+      content: "내 프로필을 여기서 변경하세요..",
+    },
+  ];
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request);
@@ -18,7 +35,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/login");
   }
 
-  return { id: user.id, name: user.name, email: user.email, bio: user.bio, avatarUrl: user.avatarUrl };
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    bio: user.bio,
+    avatarUrl: user.avatarUrl,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -40,7 +63,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     data: { name, email, bio, avatarUrl: removeAvatar ? null : avatarUrl },
   });
 
-  return redirect("/profile");
+  return redirect("/");
 };
 
 export default function EditProfile() {
