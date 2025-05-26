@@ -105,7 +105,7 @@ export default function Page() {
           </p>
           <p>
             비밀번호를 잊으셨나요?{" "}
-            <a href="/forget" className="text-blue-400 hover:underline">
+            <a href="/forget-pasword" className="text-blue-400 hover:underline">
               비밀번호 찾기
             </a>
           </p>

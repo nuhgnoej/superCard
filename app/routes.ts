@@ -15,7 +15,7 @@ export default [
     route("dashboard", "./routes/dashboard.tsx"),
     route("login", "./routes/login.tsx"),
     route("register", "./routes/register.tsx"),
-    route("forget", "./routes/forget.tsx"),
+    route("/forget-pasword", "./routes/forget-pasword.tsx"),
     route("card/:cardId", "./routes/cardId.tsx"),
     route("edit/:cardId", "./routes/edit.tsx"),
     route("api/card/:cardId", "./routes/api/card.tsx"),
@@ -23,5 +23,6 @@ export default [
     route("profile", "./routes/profile.tsx"),
     route("cardPage", "./routes/cardPage.tsx"),
     route("api/cards", "./routes/api/card-page.tsx"),
+    route("reset-password", "./routes/reset-password.tsx"),
   ]),
 ] satisfies RouteConfig;
