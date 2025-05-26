@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import clsx from "clsx";
 import {
-  CheckCircle,
   CheckSquare,
   Edit,
   FileText,
@@ -11,14 +10,14 @@ import {
   Info,
   Loader2,
   StickyNote,
-  ThumbsDown,
-  ThumbsUp,
   Trash,
 } from "lucide-react";
 import { Link } from "react-router";
 import type { Card } from "@prisma/client";
 import NewCardFloatingButton from "./NewCardFloatingButton";
 import { generateReviewUpdate } from "~/utils/reviewLogic";
+
+type ReviewResult = "easy" | "good" | "hard" | "fail";
 
 const PAGE_LIMIT = 10;
 
@@ -74,7 +73,6 @@ export default function CardList({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [query, setQuery] = useState("");
-  const [success, setSuccess] = useState<{ [key: number]: boolean }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<string>("all");
 
@@ -122,22 +120,19 @@ export default function CardList({
     }
   };
 
-  const toggleSuccessFailure = (cardId: number) => {
-    setSuccess((prev) => ({ ...prev, [cardId]: !prev[cardId] }));
-  };
-
-  const handleComplete = async (cardId: number) => {
+  const handleComplete = async (cardId: number, result: ReviewResult) => {
     const card = cards.find((c) => c.id === cardId);
     if (!card) return;
 
     const formData = generateReviewUpdate({
       card: {
         id: card.id,
-        intervalDays: card.intervalDays,
+        intervalDays: card.intervalDays ?? 1,
         box: card.box ?? 1,
-        reviewCount: card.reviewCount,
+        reviewCount: card.reviewCount ?? 0,
+        easeFactor: card.easeFactor ?? 2.5,
       },
-      success: success[cardId],
+      result,
     });
 
     try {
@@ -151,6 +146,10 @@ export default function CardList({
 
       if (response.ok) {
         console.log(`🎉 Card ${cardId} updated successfully!`);
+        const updatedValues = Object.fromEntries(formData.entries());
+        setCards((prev) =>
+          prev.map((c) => (c.id === cardId ? { ...c, ...updatedValues } : c))
+        );
       } else {
         const errorData = await response.json();
         console.error(`❌ Failed to update card ${cardId}:`, errorData);
@@ -255,24 +254,36 @@ export default function CardList({
                     className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition"
                   >
                     <Trash className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => toggleSuccessFailure(card.id)}
-                    className={clsx("text-white p-2 rounded-md", {
-                      "bg-yellow-500 hover:bg-yellow-600 transition":
-                        success[card.id],
-                      "bg-gray-500 hover:bg-gray-600 transition":
-                        !success[card.id],
-                    })}
-                  >
-                    {success[card.id] ? <ThumbsUp /> : <ThumbsDown />}
-                  </button>
-                  <button
-                    onClick={() => handleComplete(card.id)}
-                    className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition"
-                  >
-                    <CheckCircle className="w-5 h-5" />
-                  </button>
+                  </button>                  
+                  <div className="mt-4 flex justify-end space-x-2 flex-wrap">
+                    {(["easy", "good", "hard", "fail"] as ReviewResult[]).map(
+                      (result) => (
+                        <button
+                          key={result}
+                          onClick={() => handleComplete(card.id, result)}
+                          title={`Review: ${result}`}
+                          className={clsx(
+                            "p-2 rounded-md text-white transition font-semibold text-xs",
+                            {
+                              easy: "bg-green-500 hover:bg-green-600",
+                              good: "bg-blue-500 hover:bg-blue-600",
+                              hard: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                              fail: "bg-red-500 hover:bg-red-600",
+                            }[result]
+                          )}
+                        >
+                          {
+                            {
+                              easy: "😄 Easy",
+                              good: "🙂 Good",
+                              hard: "😐 Hard",
+                              fail: "❌ Fail",
+                            }[result]
+                          }
+                        </button>
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

@@ -10,6 +10,17 @@ import {
 import prisma from "~/utils/db.server";
 import { saveProfileImage } from "~/utils/profile-repo";
 import { getSession } from "~/utils/session.server";
+import type { Route } from "../+types/root";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Profile | SuperCard" },
+    {
+      name: "description",
+      content: "내 프로필을 여기서 변경하세요..",
+    },
+  ];
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request);

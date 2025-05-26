@@ -13,6 +13,8 @@ import type { Card } from "@prisma/client";
 import { getCardsAll } from "~/utils/card-repo";
 import { generateReviewUpdate } from "~/utils/reviewLogic";
 
+type ReviewResult = "easy" | "good" | "hard" | "fail";
+
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Cards | SuperCard" },
@@ -66,16 +68,9 @@ export default function Page() {
       console.error("Error occurred while deleting the card:", error);
     }
   };
-
-  // 성공/실패 토글 버튼 클릭 시 호출되는 함수
-  const toggleSuccessFailure = (cardId: number) => {
-    // console.log('hello This is future ToggleBtn')
-    setSuccess((pre) => ({ ...pre, [cardId]: !pre[cardId] }));
-    // console.log(success);
-  };
-
+  
   // 완료 버튼 클릭 시 호출되는 함수
-  const handleComplete = async (cardId: number) => {
+  const handleComplete = async (cardId: number, result: ReviewResult) => {
     const card = cardList.find((c: Card & { id: number }) => c.id === cardId);
     if (!card) return;
 
@@ -85,8 +80,9 @@ export default function Page() {
         intervalDays: card.intervalDays,
         box: card.box,
         reviewCount: card.reviewCount,
+        easeFactor: card.easeFactor ?? 2.5,
       },
-      success: success[cardId],
+      result,
     });
 
     try {
@@ -210,27 +206,36 @@ export default function Page() {
                 >
                   <Trash className="w-5 h-5" />
                 </button>
-                {/* 성공/실패 토글 버튼 */}
-                <button
-                  onClick={() => toggleSuccessFailure(card.id)}
-                  className={clsx("text-white p-2 rounded-md", {
-                    "bg-yellow-500 hover:bg-yellow-600 transition":
-                      success[card.id],
-                    "bg-gray-500 hover:bg-gray-600 transition":
-                      !success[card.id],
-                  })}
-                  title="Toggle Success/Failure"
-                >
-                  {success[card.id] ? <ThumbsUp /> : <ThumbsDown />}
-                </button>
-                {/* 완료 버튼 */}
-                <button
-                  onClick={() => handleComplete(card.id)}
-                  className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition"
-                  title="Complete"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                </button>
+
+                <div className="mt-4 flex justify-end space-x-2">
+                  {(["easy", "good", "hard", "fail"] as ReviewResult[]).map(
+                    (result) => (
+                      <button
+                        key={result}
+                        onClick={() => handleComplete(card.id, result)}
+                        title={`Review: ${result}`}
+                        className={clsx(
+                          "p-2 rounded-md text-white transition font-semibold text-xs",
+                          {
+                            easy: "bg-green-500 hover:bg-green-600",
+                            good: "bg-blue-500 hover:bg-blue-600",
+                            hard: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                            fail: "bg-red-500 hover:bg-red-600",
+                          }[result]
+                        )}
+                      >
+                        {
+                          {
+                            easy: "😄 Easy",
+                            good: "🙂 Good",
+                            hard: "😐 Hard",
+                            fail: "❌ Fail",
+                          }[result]
+                        }
+                      </button>
+                    )
+                  )}
+                </div>
               </div>
             </div>
           ))}

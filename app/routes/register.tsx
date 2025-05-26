@@ -3,6 +3,17 @@ import type { ActionFunctionArgs } from "react-router";
 import { Form } from "react-router";
 import { redirect, useActionData } from "react-router";
 import prisma from "~/utils/db.server";
+import type { Route } from "../+types/root";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Sign up | SuperCard" },
+    {
+      name: "description",
+      content: "가입하세요.",
+    },
+  ];
+}
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
