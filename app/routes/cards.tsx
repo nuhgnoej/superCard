@@ -11,6 +11,7 @@ import type { Route } from "../+types/root";
 import NewCardFloatingButton from "~/components/NewCardFloatingButton";
 import type { Card } from "@prisma/client";
 import { getCardsAll } from "~/utils/card-repo";
+import { generateReviewUpdate } from "~/utils/reviewLogic";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -54,7 +55,9 @@ export default function Page() {
         });
         if (response.ok) {
           console.log(`Card with ID ${cardId} deleted`);
-          window.location.href = "/cards";
+          setCardList((prevList: Card[]) =>
+            prevList.filter((card) => card.id !== cardId)
+          );
         } else {
           console.error("Failed to delete the card");
         }
@@ -68,38 +71,23 @@ export default function Page() {
   const toggleSuccessFailure = (cardId: number) => {
     // console.log('hello This is future ToggleBtn')
     setSuccess((pre) => ({ ...pre, [cardId]: !pre[cardId] }));
-    console.log(success);
+    // console.log(success);
   };
 
   // 완료 버튼 클릭 시 호출되는 함수
   const handleComplete = async (cardId: number) => {
     const card = cardList.find((c: Card & { id: number }) => c.id === cardId);
     if (!card) return;
-    const today = new Date().toISOString().split("T")[0];
 
-    const updatedReviewCount = card.reviewCount + 1;
-    const updatedBox = success[cardId]
-      ? card.box + 1
-      : Math.max(1, card.box - 1);
-    const updatedInterval = success[cardId]
-      ? card.reviewInterval + 1
-      : Math.max(1, card.reviewInterval - 1);
-    const updatedNextReview = new Date();
-    updatedNextReview.setDate(updatedNextReview.getDate() + updatedInterval);
-
-    // ✅ FormData 객체 생성
-    const formData = new FormData();
-    formData.append("box", String(updatedBox));
-    formData.append("reviewInterval", String(updatedInterval));
-    formData.append(
-      "nextReview",
-      updatedNextReview.toISOString().split("T")[0]
-    );
-    formData.append("lastReview", today);
-    formData.append("reviewCount", String(updatedReviewCount));
-
-    console.log(`📢 Sending PUT request to /api/card/${cardId}`);
-    console.log("📦 FormData:", Object.fromEntries(formData.entries()));
+    const formData = generateReviewUpdate({
+      card: {
+        id: card.id,
+        intervalDays: card.intervalDays,
+        box: card.box,
+        reviewCount: card.reviewCount,
+      },
+      success: success[cardId],
+    });
 
     try {
       const response = await fetch(`/api/card/${cardId}`, {
@@ -176,10 +164,16 @@ export default function Page() {
               {/* 날짜 정보 영역 */}
               <div className="mt-4">
                 <div className="mt-2 text-sm text-white">
-                  <p>Last Review: {card.lastReviewAt.toLocaleDateString()}</p>
+                  <p>
+                    Last Review:{" "}
+                    {new Date(card.lastReviewAt).toLocaleDateString("ko-KR")}
+                  </p>
                 </div>
                 <div className="mt-2 text-sm text-white">
-                  <p>Next Review: {card.nextReviewAt.toLocaleDateString()}</p>
+                  <p>
+                    Next Review:{" "}
+                    {new Date(card.nextReviewAt).toLocaleDateString("ko-KR")}
+                  </p>
                 </div>
               </div>
 

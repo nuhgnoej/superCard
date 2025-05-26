@@ -7,65 +7,98 @@ import { saveImage } from "~/utils/card-repo";
 export async function action({ request, params }: Route.ActionArgs) {
   const id = params.cardId;
 
+  function removeUndefined(obj: Record<string, any>) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([_, v]) => v !== undefined)
+    );
+  }
+
   if (request.method === "DELETE") {
     try {
       if (id) {
         await removeCard(Number(id));
+        return { response: "ok" };
       }
     } catch (err) {
       console.error(err);
     }
-    return redirect("/cards");
+    return;
   }
 
   if (request.method === "PUT") {
-    const formData = await request.formData();
+    const isApiRequest = request.headers
+      .get("accept")
+      ?.includes("application/json");
+    if (isApiRequest) {
+      // cards.tsx
+      const formData = await request.formData();
 
-    const getOptionalNumber = (value: FormDataEntryValue | null) =>
-      value === null || value === "" ? null : Number(value);
+      const getOptionalNumber = (value: FormDataEntryValue | null) =>
+        value === null || value === "" ? null : Number(value);
 
-    const title = formData.get("title")?.toString() ?? "";
-    const content = formData.get("content")?.toString() ?? "";
-    const answer = formData.get("answer")?.toString() || null;
-    const type = formData.get("type")?.toString() || null;
-    const tier = getOptionalNumber(formData.get("tier"));
-    const superCard = getOptionalNumber(formData.get("superCard"));
-    const reviewCount = getOptionalNumber(formData.get("reviewCount"));
-    const box = formData.get("box")?.toString() || null;
-    const reviewInterval = formData.get("reviewInterval")?.toString() || null;
-    const nextReview = formData.get("nextReview")?.toString() || null;
-    const lastReview = formData.get("lastReview")?.toString() || null;
+      const box = getOptionalNumber(formData.get("box"));
+      const intervalDays = getOptionalNumber(formData.get("intervalDays"));
+      const nextReviewAt = formData.get("nextReviewAt")?.toString() || null;
+      const lastReviewAt = formData.get("lastReviewAt")?.toString() || null;
+      const reviewCount = getOptionalNumber(formData.get("reviewCount"));
 
-    const file = formData.get("image");
-    let image = null;
+      const data = removeUndefined({
+        box,
+        intervalDays,
+        nextReviewAt,
+        lastReviewAt,
+        reviewCount,
+      });
 
-    if (file instanceof File && file.size > 0) {
-      image = await saveImage(file);
-    }
-
-    const data = {
-      title,
-      content,
-      tier,
-      answer,
-      superCard,
-      box,
-      reviewInterval,
-      nextReview,
-      lastReview,
-      reviewCount,
-      image,
-      type,
-    };
-
-    try {
-      if (id) {
+      try {
         await updateCard(Number(id), data);
+      } catch (error) {
+        console.error("Error updating card:", error);
+        return new Response(JSON.stringify({ ok: false }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
       }
-    } catch (err) {
-      console.error("Error updating card:", err);
-    }
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      // edit.tsx
+      const formData = await request.formData();
+      const getOptionalNumber = (value: FormDataEntryValue | null) =>
+        value === null || value === "" ? null : Number(value);
+      const title = formData.get("title")?.toString() ?? "";
+      const content = formData.get("content")?.toString() ?? "";
+      const answer = formData.get("answer")?.toString() || null;
+      const type = formData.get("type")?.toString() || null;
+      const tier = getOptionalNumber(formData.get("tier"));
+      const superCard = getOptionalNumber(formData.get("superCard"));
+      const file = formData.get("image");
+      let image = null;
 
-    return redirect("/cards");
+      if (file instanceof File && file.size > 0) {
+        image = await saveImage(file);
+      }
+
+      const data = {
+        title,
+        content,
+        tier,
+        answer,
+        superCard,
+        image,
+        type,
+      };
+
+      try {
+        if (id) {
+          await updateCard(Number(id), data);
+        }
+      } catch (err) {
+        console.error("Error updating card:", err);
+      }
+      return redirect("/cards");
+    }
   }
 }

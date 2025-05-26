@@ -11,8 +11,8 @@ import {
   Plus,
 } from "lucide-react";
 import clsx from "clsx";
-import { useState } from "react"; 
-import { Loader2 } from "lucide-react"; 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 type TopProps = {
   isLoggedIn: boolean;
@@ -20,6 +20,7 @@ type TopProps = {
     id: number;
     name: string | null;
     email: string;
+    avatarUrl?: string | null;
   } | null;
 };
 
@@ -158,13 +159,29 @@ export default function Top({ isLoggedIn, user }: TopProps) {
             { hidden: user === null }
           )}
         >
-          <Link
+          {isLoggedIn && user && (
+            <div className="flex items-center space-x-4 px-4 py-2 rounded-lg transition-all text-white font-semibold font-pretendard tracking-tight">
+              <img
+                src={user.avatarUrl || "/profile/uploads/default-avatar.png"}
+                alt="User Avatar"
+                className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm"
+              />
+              <Link
+                to="/profile"
+                className="hover:underline text-white font-semibold transition-all"
+                title="user profile"
+              >
+                <div>환영합니다! {user.name}님! 👋</div>
+              </Link>
+            </div>
+          )}
+          {/* <Link
             to="/profile"
             className="hover:underline text-white font-semibold transition-all"
             title="user profile"
           >
             <div>환영합니다! {user?.name}님! 👋</div>
-          </Link>
+          </Link> */}
         </div>
 
         <div

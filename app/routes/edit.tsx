@@ -1,6 +1,11 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { Form, redirect, useLoaderData, type LoaderFunctionArgs } from "react-router";
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  type LoaderFunctionArgs,
+} from "react-router";
 import type { Route } from "../+types/root";
 import { getCardById } from "~/utils/card-repo";
 import { getSession, getUser } from "~/utils/session.server";
@@ -26,7 +31,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const user = await getUser(request);
 
-  const card = await getCardById(Number(id),userId);
+  const card = await getCardById(Number(id), userId);
   return { user, card };
 };
 
@@ -43,20 +48,22 @@ export default function Edit() {
     console.warn("loadedCard is undefined on client");
   }
 
-  console.log("loadedCard is : ", loadedCard);
+  // console.log("loadedCard is : ", loadedCard);
+  const { id, title, content, tier, answer, superCard, image, type } =
+    loadedCard.card;
 
   const [card, setCard] = useState({
-    id: "",
-    title: "",
-    content: "",
-    tier: 1,
-    answer: "",
-    superCard: null,
-    image: null,
-    type: "",
+    id,
+    title,
+    content,
+    tier,
+    answer,
+    superCard,
+    image,
+    type,
   });
 
-  useEffect(() => setCard(loadedCard), []);
+  // useEffect(() => setCard(loadedCard), []);
 
   const [isShow, setShow] = useState(false);
 
@@ -205,7 +212,7 @@ export default function Edit() {
             <input
               type="text"
               name="superCard"
-              value={card.superCard ?? ""}
+              value={String(card.superCard ?? "")}
               onChange={handleChange}
               className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out text-white "
             />

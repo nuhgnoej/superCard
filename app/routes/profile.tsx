@@ -1,6 +1,12 @@
 // src/pages/EditProfile.tsx
 import { useState, useRef } from "react";
-import { Form, redirect, useLoaderData, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router";
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from "react-router";
 import prisma from "~/utils/db.server";
 import { saveProfileImage } from "~/utils/profile-repo";
 import { getSession } from "~/utils/session.server";
@@ -18,7 +24,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/login");
   }
 
-  return { id: user.id, name: user.name, email: user.email, bio: user.bio, avatarUrl: user.avatarUrl };
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    bio: user.bio,
+    avatarUrl: user.avatarUrl,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -40,7 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     data: { name, email, bio, avatarUrl: removeAvatar ? null : avatarUrl },
   });
 
-  return redirect("/profile");
+  return redirect("/");
 };
 
 export default function EditProfile() {

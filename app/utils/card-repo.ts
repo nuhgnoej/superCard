@@ -76,26 +76,55 @@ export async function removeCard(id: number) {
   });
 }
 
+// export async function updateCard(id: number, data: any) {
+//   return await prisma.card.update({
+//     where: { id },
+//     data: {
+//       title: data.title,
+//       content: data.content,
+//       answer: data.answer ?? "",
+//       image: data.image ?? null,
+//       type: data.type ?? null,
+//       tier: data.tier ?? null,
+//       box: data.box ? Number(data.box) : null,
+//       superCardId: data.superCard ?? null,
+//       reviewCount: data.reviewCount ?? 0,
+//       intervalDays: data.reviewInterval
+//         ? Number(data.reviewInterval)
+//         : 1,
+//       easeFactor: 2.5, // optional: 유지 or 계산 로직
+//       lastReviewAt: data.lastReview ? new Date(data.lastReview) : new Date(),
+//       nextReviewAt: data.nextReview ? new Date(data.nextReview) : new Date(),
+//     },
+//   });
+// }
+
 export async function updateCard(id: number, data: any) {
+  const updateData: Record<string, any> = {};
+
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.content !== undefined) updateData.content = data.content;
+  if (data.answer !== undefined) updateData.answer = data.answer ?? "";
+  if (data.image !== undefined) updateData.image = data.image ?? null;
+  if (data.type !== undefined) updateData.type = data.type ?? null;
+  if (data.tier !== undefined) updateData.tier = data.tier ?? null;
+  if (data.box !== undefined) updateData.box = Number(data.box);
+  if (data.superCard !== undefined)
+    updateData.superCardId = data.superCard ?? null;
+  if (data.reviewCount !== undefined)
+    updateData.reviewCount = Number(data.reviewCount);
+  if (data.intervalDays !== undefined)
+    updateData.intervalDays = Number(data.intervalDays);
+  if (data.easeFactor !== undefined)
+    updateData.easeFactor = Number(data.easeFactor);
+  if (data.lastReviewAt !== undefined)
+    updateData.lastReviewAt = new Date(data.lastReviewAt);
+  if (data.nextReviewAt !== undefined)
+    updateData.nextReviewAt = new Date(data.nextReviewAt);
+
   return await prisma.card.update({
     where: { id },
-    data: {
-      title: data.title,
-      content: data.content,
-      answer: data.answer ?? "",
-      image: data.image ?? null,
-      type: data.type ?? null,
-      tier: data.tier ?? null,
-      box: data.box ? Number(data.box) : null,
-      superCardId: data.superCard ?? null,
-      reviewCount: data.reviewCount ?? 0,
-      intervalDays: data.reviewInterval
-        ? Number(data.reviewInterval)
-        : 1,
-      easeFactor: 2.5, // optional: 유지 or 계산 로직
-      lastReviewAt: data.lastReview ? new Date(data.lastReview) : new Date(),
-      nextReviewAt: data.nextReview ? new Date(data.nextReview) : new Date(),
-    },
+    data: updateData,
   });
 }
 

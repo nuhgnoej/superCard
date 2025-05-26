@@ -19,8 +19,8 @@ export function meta({}: Route.MetaArgs) {
 // loader 함수
 export async function loader({ request, params }: Route.LoaderArgs) {
   const session = await getSession(request);
-    const userId = session.get("userId");
-    const id = params.cardId;
+  const userId = session.get("userId");
+  const id = params.cardId;
   const card = await getCardById(Number(id), userId);
   return card;
 }
@@ -33,7 +33,7 @@ export default function CardId() {
   if (loaderData.image) {
     imageUrl = loaderData.image;
   } else {
-    imageUrl = "/uploads/default.jpg";
+    imageUrl = "/uploads/default.png";
   }
 
   const handleDelete = async (cardId: number) => {
